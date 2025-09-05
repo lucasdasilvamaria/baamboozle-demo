@@ -1,34 +1,54 @@
+/* styles.css */
+:root {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  padding: 16px;
+  background: #f7f7fb;
+  color: #111;
+}
+
+header h1 {
+    text-align: center;
+margin-bottom: 16px;
+  font-size: 24px;
+}
+
+.hidden {
+  display: none !important;
+}
+
 #cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: 16px;
   padding: 16px;
-  width: 100%;
-  box-sizing: border-box;
 }
 
 .card {
   position: relative;
-  width: 100%;
-  aspect-ratio: 100 / 140; /* mantém proporção */
+  width: 100px;
+  height: 140px;
   cursor: pointer;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
   transition: transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 24px;
 }
 
-.card:hover { transform: translateY(-5px); }
+.card.correct { background-color: #4caf50; color: white; }
+.card.wrong { background-color: #f44336; color: white; }
 
-.card-number {
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  font-weight: bold;
-  font-size: 18px;
-  color: white;
-  text-shadow: 1px 1px 2px #000;
-  pointer-events: none;
+.card:hover {
+  transform: translateY(-5px);
 }
 
 .card img {
@@ -38,7 +58,64 @@
   border-radius: 8px;
 }
 
-.card.disabled {
-  opacity: 0.35;
-  pointer-events: none;
+#modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background: #fff;
+  padding: 18px;
+  border-radius: 8px;
+  max-width: 720px;
+  width: 96%;
+}
+
+#choices button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 4px 0;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  background: #fafafa;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#scoreboard {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+
+.current-turn { color: #2196f3; font-weight: bold; }
+
+#winner-screen {
+  text-align: center;
+  padding: 40px;
+  background: linear-gradient(135deg, #f0c27b, #4b1248);
+  color: white;
+  border-radius: 12px;
+  margin-top: 20px;
+}
+
+#winner-screen button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background-color: #fff;
+  color: #4b1248;
+  font-weight: bold;
 }

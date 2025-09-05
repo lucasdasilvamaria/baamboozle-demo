@@ -2,63 +2,48 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Baamboozle Demo - Quiz de Inglês</title>
-  <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Quiz</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header>
-    <h1>Baamboozle Demo - Quiz de Inglês</h1>
-  </header>
+<header>
+  <h1>English Quiz</h1>
+</header>
 
-  <main>
-    <!-- Seleção de quantidade de times -->
-    <section id="team-count-section">
-      <label for="team-count">Quantos times vão jogar?</label>
-      <input type="number" id="team-count" min="1" max="10" value="2">
-      <button id="team-count-ok">OK</button>
-    </section>
+<main>
+  <section id="setup">
+    <div>
+      <label>Quantos times vão jogar? </label>
+      <input type="number" id="num-teams" min="1" max="10" value="2">
+      <button id="ok-teams">OK</button>
+    </div>
+    <div id="team-names"></div>
+    <button id="start-game" class="hidden">Começar o jogo</button>
+  </section>
 
-    <!-- Nomes dos times -->
-    <section id="team-names-section" class="hidden">
-      <div id="team-names-container"></div>
-      <button id="team-names-ok">Começar o jogo</button>
-    </section>
+  <section id="board" class="hidden">
+    <div id="scoreboard"></div>
+    <div id="cards"></div>
+  </section>
 
-    <!-- Tabuleiro -->
-    <section id="board" class="hidden">
-  <div id="info">
-    <div id="team-scores"></div>
-    <div>Time da vez: <span id="current-team-name"></span></div>
-    <button id="back-btn">Voltar</button>
+  <div id="modal" class="hidden">
+    <div class="modal-content">
+      <h2 id="q-text"></h2>
+      <div id="choices"></div>
+      <div class="modal-controls">
+        <button id="close-q">Fechar</button>
+      </div>
+    </div>
   </div>
-  <div id="cards"></div> <!-- <- container da grid -->
-</section>
 
+  <div id="winner-screen" class="hidden">
+    <h2 id="winner-text"></h2>
+    <button id="restart">Jogar de novo</button>
+  </div>
+</main>
 
-    <!-- Modal de pergunta -->
-    <div id="modal" class="hidden">
-      <div class="modal-content">
-        <h2 id="q-text"></h2>
-        <div id="choices"></div>
-        <div class="modal-controls">
-          <button id="close-q">
-            <img src="assets/icons/close.svg" alt="Fechar" width="20">
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal final -->
-    <div id="final-modal" class="hidden">
-      <div class="modal-content final">
-        <h2 id="final-text"></h2>
-        <button id="final-restart">Jogar de novo</button>
-      </div>
-    </div>
-  </main>
-
-  <script src="app.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
