@@ -8,7 +8,22 @@
         { "num": 2, "question": "What's the plural of 'child'?", "choices": ["childs","children","childes"], "answer": 1, "points": 10 },
         { "num": 3, "question": "Complete: I ___ a book.", "choices": ["read","reads","reading"], "answer": 0, "points": 10 },
         { "num": 4, "question": "Translate: 'maçã'", "choices": ["apple","orange","pear"], "answer": 0, "points": 10 },
-        { "num": 5, "question": "Past of 'go'?", "choices": ["goed","went","gone"], "answer": 1, "points": 10 }
+        { "num": 5, "question": "Past of 'go'?", "choices": ["goed","went","gone"], "answer": 1, "points": 10 },
+        { "num": 6, "question": "Translate: 'gato'", "choices": ["dog","cat","mouse"], "answer": 1, "points": 10 },
+        { "num": 7, "question": "Complete: She ___ happy.", "choices": ["is","are","am"], "answer": 0, "points": 10 },
+        { "num": 8, "question": "What's the opposite of 'hot'?", "choices": ["cold","warm","cool"], "answer": 0, "points": 10 },
+        { "num": 9, "question": "Translate: 'livro'", "choices": ["book","pen","table"], "answer": 0, "points": 10 },
+        { "num": 10, "question": "Past of 'eat'?", "choices": ["eated","ate","eaten"], "answer": 1, "points": 10 },
+        { "num": 11, "question": "What's the plural of 'mouse'?", "choices": ["mouses","mice","mouse"], "answer": 1, "points": 10 },
+        { "num": 12, "question": "Translate: 'bola'", "choices": ["ball","bat","bag"], "answer": 0, "points": 10 },
+        { "num": 13, "question": "Complete: They ___ playing football.", "choices": ["is","are","am"], "answer": 1, "points": 10 },
+        { "num": 14, "question": "What's the opposite of 'big'?", "choices": ["small","tall","short"], "answer": 0, "points": 10 },
+        { "num": 15, "question": "Translate: 'escola'", "choices": ["school","hospital","church"], "answer": 0, "points": 10 },
+        { "num": 16, "question": "Past of 'see'?", "choices": ["saw","seen","seed"], "answer": 0, "points": 10 },
+        { "num": 17, "question": "Complete: I ___ to the market yesterday.", "choices": ["go","went","gone"], "answer": 1, "points": 10 },
+        { "num": 18, "question": "Translate: 'carro'", "choices": ["car","bus","bike"], "answer": 0, "points": 10 },
+        { "num": 19, "question": "What's the opposite of 'happy'?", "choices": ["sad","angry","tired"], "answer": 0, "points": 10 },
+        { "num": 20, "question": "Complete: He ___ a letter every day.", "choices": ["write","writes","writing"], "answer": 1, "points": 10 }
       ]
     }
   ]

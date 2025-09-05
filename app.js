@@ -1,14 +1,9 @@
-// Estado do jogo
-const state = { currentGame: null, scores: {}, used: new Set() };
+// app.js
+const state = { currentGame: null, cardsUsed: new Set(), teams: [], currentTeam: 0 };
 
-// Função utilitária para criar elementos
-function el(tag, cls){
-  const n = document.createElement(tag);
-  if(cls) n.className = cls;
-  return n;
-}
+// Criação de elementos
+function el(tag, cls){ const n = document.createElement(tag); if(cls) n.className = cls; return n; }
 
-// Carregar games.json
 async function loadGames(){
   try {
     const res = await fetch('games.json');
@@ -20,121 +15,134 @@ async function loadGames(){
   }
 }
 
-// Renderizar lista de jogos
-function renderGameList(games){
-  const cont = document.getElementById('game-list');
-  cont.innerHTML = '<h2>Jogos disponíveis</h2>';
-  games.forEach(g=>{
-    const card = el('div','card');
-    card.textContent = g.title || "Jogo sem título";
-    card.onclick = ()=> startGame(g);
-    cont.appendChild(card);
-  });
-}
+// Seleção de quantidade de times
+document.getElementById('team-count-ok').addEventListener('click', ()=>{
+  const count = parseInt(document.getElementById('team-count').value);
+  if(count < 1) return;
+  const container = document.getElementById('team-names-container');
+  container.innerHTML = '';
+  state.teams = [];
+  for(let i=0;i<count;i++){
+    const input = document.createElement('input');
+    input.value = 'Time '+(i+1);
+    input.dataset.index=i;
+    container.appendChild(input);
+    state.teams.push({name: input.value, score:0, input});
+    input.addEventListener('input', ()=> state.teams[i].name = input.value);
+  }
+  document.getElementById('team-count-section').classList.add('hidden');
+  document.getElementById('team-names-section').classList.remove('hidden');
+});
 
-// Iniciar jogo
-function startGame(game){
-  if(!game || !game.cards || game.cards.length === 0) return alert("Jogo inválido ou sem cartas!");
-  state.currentGame = game;
-  state.used = new Set();
-  state.scores = { TeamA:0 };
-  document.getElementById('game-list').classList.add('hidden');
+// Começar jogo
+document.getElementById('team-names-ok').addEventListener('click', ()=>{
+  document.getElementById('team-names-section').classList.add('hidden');
   document.getElementById('board').classList.remove('hidden');
-  document.getElementById('game-title').textContent = game.title || "Jogo";
-  buildBoard(game);
-  renderScoreboard();
+  loadGames().then(games=>{
+    if(games.length===0) return alert('Nenhum jogo disponível');
+    startGame(games[0]);
+  });
+});
+
+function startGame(game){
+  state.currentGame=game;
+  state.cardsUsed=new Set();
+  state.currentTeam=0;
+  renderBoard();
+  renderScores();
+  renderCurrentTeam();
 }
 
-// Construir tabuleiro
-function buildBoard(game){
+function renderBoard(){
   const cards = document.getElementById('cards');
-  cards.innerHTML = '';
-  game.cards.forEach(c=>{
+  cards.innerHTML='';
+  state.currentGame.cards.forEach(c=>{
     const d = el('div','card');
     const img = document.createElement('img');
-    img.src = 'assets/imgs/card-back.png';
-    img.alt = 'Carta '+(c.num || '?');
+    img.src='assets/imgs/card-back.png';
+    img.alt='Carta '+c.num;
     d.appendChild(img);
-    d.dataset.num = c.num;
+    const numSpan = el('span','card-number');
+    numSpan.textContent=c.num;
+    d.appendChild(numSpan);
     d.onclick = ()=> openQuestion(c,d);
     cards.appendChild(d);
   });
 }
 
-// Atualizar pontuação e botão de reset com ícone
-function renderScoreboard(){
-  const sb = document.getElementById('scoreboard');
-  sb.innerHTML = '<strong>Pontuação</strong><div>TeamA: '+(state.scores.TeamA||0)+'</div>';
-
-  // Criar botão com ícone
-  const btn = document.createElement('button');
-  btn.onclick = resetGame;
-
-  const img = document.createElement('img');
-  img.src = 'assets/icons/reset.svg';
-  img.alt = 'Reset';
-  img.width = 20;
-
-  btn.appendChild(img);
-  btn.appendChild(document.createTextNode(' Jogar de novo'));
-  sb.appendChild(btn);
+function renderScores(){
+  const container = document.getElementById('team-scores');
+  container.innerHTML='';
+  state.teams.forEach((t,i)=>{
+    const div = el('div');
+    div.textContent = `${t.name}: ${t.score}`;
+    if(i===state.currentTeam) div.classList.add('current-team');
+    container.appendChild(div);
+  });
 }
 
-// Abrir pergunta
-function openQuestion(card, cardEl){
-  if(!card || !card.question || !card.choices) return;
-  if(state.used.has(card.num)) return;
+function renderCurrentTeam(){
+  document.getElementById('current-team-name').textContent = state.teams[state.currentTeam].name;
+}
 
+function openQuestion(card, cardEl){
+  if(state.cardsUsed.has(card.num)) return;
   const modal = document.getElementById('modal');
   modal.classList.remove('hidden');
-
   document.getElementById('q-text').textContent = card.question;
   const choices = document.getElementById('choices');
-  choices.innerHTML = '';
-
+  choices.innerHTML='';
   card.choices.forEach((ch,i)=>{
-    const btn = document.createElement('button');
-    btn.textContent = (i+1)+'. '+ch;
-    btn.onclick = ()=> {
-      if(i === card.answer) state.scores.TeamA += card.points || 0;
-      state.used.add(card.num);
+    const btn = el('button');
+    btn.textContent = `${i+1}. ${ch}`;
+    btn.onclick = ()=>{
+      if(i===card.answer) state.teams[state.currentTeam].score += card.points;
+      state.cardsUsed.add(card.num);
       cardEl.classList.add('disabled');
       modal.classList.add('hidden');
-      renderScoreboard();
+      renderScores();
+      // Próximo time
+      state.currentTeam = (state.currentTeam+1)%state.teams.length;
+      renderScores();
+      renderCurrentTeam();
+      // Verificar fim
+      if(state.cardsUsed.size===state.currentGame.cards.length){
+        showFinal();
+      }
     };
     choices.appendChild(btn);
   });
 }
 
-// Resetar jogo
-function resetGame(){
-  if(state.currentGame) startGame(state.currentGame);
+document.getElementById('close-q').addEventListener('click', ()=>{
+  document.getElementById('modal').classList.add('hidden');
+});
+
+document.getElementById('back-btn').addEventListener('click', ()=>{
+  document.getElementById('board').classList.add('hidden');
+  document.getElementById('team-count-section').classList.remove('hidden');
+});
+
+// Tela final
+function showFinal(){
+  const modal = document.getElementById('final-modal');
+  modal.classList.remove('hidden');
+  const text = document.getElementById('final-text');
+  // Determinar vencedor(es)
+  let maxScore = Math.max(...state.teams.map(t=>t.score));
+  const winners = state.teams.filter(t=>t.score===maxScore);
+  if(winners.length===1){
+    text.textContent = `Vencedor: ${winners[0].name} com ${maxScore} pontos! 🎉`;
+  } else {
+    text.textContent = `Empate entre: ${winners.map(t=>t.name).join(', ')} com ${maxScore} pontos! 🤝`;
+  }
 }
 
-// Inicialização após DOM carregado
-window.addEventListener('DOMContentLoaded', () => {
-  const closeBtn = document.getElementById('close-q');
-  if(closeBtn){
-    closeBtn.addEventListener('click', () => {
-      document.getElementById('modal').classList.add('hidden');
-    });
-  }
-
-  const backBtn = document.getElementById('back-btn');
-  if(backBtn){
-    backBtn.addEventListener('click', () => {
-      document.getElementById('board').classList.add('hidden');
-      document.getElementById('game-list').classList.remove('hidden');
-    });
-  }
-
-  // Carregar e renderizar jogos
-  loadGames().then(games=>{
-    const listEl = document.getElementById('game-list');
-    if(!games || games.length===0){
-      listEl.innerText='Nenhum jogo encontrado em games.json';
-    } else {
-      renderGameList(games);
-    }
-  });
+document.getElementById('final-restart').addEventListener('click', ()=>{
+  document.getElementById('final-modal').classList.add('hidden');
+  document.getElementById('board').classList.add('hidden');
+  document.getElementById('team-count-section').classList.remove('hidden');
+  state.teams.forEach(t=>t.score=0);
+  state.cardsUsed.clear();
+  state.currentTeam=0;
 });
