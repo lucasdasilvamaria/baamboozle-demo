@@ -68,7 +68,7 @@ function checkEnd(){
   if(allDisabled){
     const max = Math.max(...state.scores);
     const winners = state.teams.filter((t,i)=>state.scores[i]===max);
-    const winnerText = winners.length===1 ? `Vencedor: ${winners[0]}` : `Empate entre: ${winners.join(', ')}`;
+    const winnerText = winners.length===1 ? `Winner: ${winners[0]}` : `It's a tie: ${winners.join(', ')}`;
     const ws = document.getElementById('winner-screen');
     document.getElementById('winner-text').textContent = winnerText;
     ws.classList.remove('hidden');
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', async ()=>{
     state.teams = [];
     for(let i=0;i<n;i++){
       const input = el('input');
-      input.value = `Time ${i+1}`;
+      input.value = `Team ${i+1}`;
       input.oninput = ()=> state.teams[i]=input.value;
       teamNamesDiv.appendChild(input);
       state.teams.push(input.value);
