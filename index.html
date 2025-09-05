@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baamboozle Demo - Quiz de Inglês</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Baamboozle Demo - Quiz de Inglês</h1>
+  </header>
+
+  <main>
+    <section id="game-list"></section>
+
+    <section id="board" class="hidden">
+      <div id="info">
+        <span id="game-title"></span>
+        <button id="back-btn">Voltar</button>
+      </div>
+      <div id="cards"></div>
+      <div id="scoreboard"></div>
+    </section>
+
+    <div id="modal" class="hidden">
+      <div class="modal-content">
+        <h2 id="q-text"></h2>
+        <div id="choices"></div>
+        <div class="modal-controls">
+          <button id="close-q">
+            <img src="assets/icons/close.svg" alt="Fechar" width="20">
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

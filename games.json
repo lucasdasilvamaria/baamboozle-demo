@@ -1,0 +1,15 @@
+{
+  "games": [
+    {
+      "id": "basic-english",
+      "title": "Basic English Demo",
+      "cards": [
+        { "num": 1, "question": "Translate: 'cachorro'", "choices": ["dog","cat","bird"], "answer": 0, "points": 10 },
+        { "num": 2, "question": "What's the plural of 'child'?", "choices": ["childs","children","childes"], "answer": 1, "points": 10 },
+        { "num": 3, "question": "Complete: I ___ a book.", "choices": ["read","reads","reading"], "answer": 0, "points": 10 },
+        { "num": 4, "question": "Translate: 'maçã'", "choices": ["apple","orange","pear"], "answer": 0, "points": 10 },
+        { "num": 5, "question": "Past of 'go'?", "choices": ["goed","went","gone"], "answer": 1, "points": 10 }
+      ]
+    }
+  ]
+}
