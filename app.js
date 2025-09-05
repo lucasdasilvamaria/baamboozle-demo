@@ -1,7 +1,12 @@
 // Estado do jogo
 const state = { currentGame: null, scores: {}, used: new Set() };
 
-function el(tag, cls){ const n=document.createElement(tag); if(cls) n.className=cls; return n; }
+// Função utilitária para criar elementos
+function el(tag, cls){
+  const n = document.createElement(tag);
+  if(cls) n.className = cls;
+  return n;
+}
 
 // Carregar games.json
 async function loadGames(){
@@ -21,7 +26,7 @@ function renderGameList(games){
   cont.innerHTML = '<h2>Jogos disponíveis</h2>';
   games.forEach(g=>{
     const card = el('div','card');
-    card.textContent = g.title;
+    card.textContent = g.title || "Jogo sem título";
     card.onclick = ()=> startGame(g);
     cont.appendChild(card);
   });
@@ -29,12 +34,13 @@ function renderGameList(games){
 
 // Iniciar jogo
 function startGame(game){
+  if(!game || !game.cards || game.cards.length === 0) return alert("Jogo inválido ou sem cartas!");
   state.currentGame = game;
   state.used = new Set();
   state.scores = { TeamA:0 };
   document.getElementById('game-list').classList.add('hidden');
   document.getElementById('board').classList.remove('hidden');
-  document.getElementById('game-title').textContent = game.title;
+  document.getElementById('game-title').textContent = game.title || "Jogo";
   buildBoard(game);
   renderScoreboard();
 }
@@ -47,7 +53,7 @@ function buildBoard(game){
     const d = el('div','card');
     const img = document.createElement('img');
     img.src = 'assets/imgs/card-back.png';
-    img.alt = 'Carta '+c.num;
+    img.alt = 'Carta '+(c.num || '?');
     d.appendChild(img);
     d.dataset.num = c.num;
     d.onclick = ()=> openQuestion(c,d);
@@ -58,7 +64,7 @@ function buildBoard(game){
 // Atualizar pontuação e botão de reset com ícone
 function renderScoreboard(){
   const sb = document.getElementById('scoreboard');
-  sb.innerHTML = '<strong>Pontuação</strong><div>TeamA: '+state.scores.TeamA+'</div>';
+  sb.innerHTML = '<strong>Pontuação</strong><div>TeamA: '+(state.scores.TeamA||0)+'</div>';
 
   // Criar botão com ícone
   const btn = document.createElement('button');
@@ -76,17 +82,21 @@ function renderScoreboard(){
 
 // Abrir pergunta
 function openQuestion(card, cardEl){
+  if(!card || !card.question || !card.choices) return;
   if(state.used.has(card.num)) return;
+
   const modal = document.getElementById('modal');
   modal.classList.remove('hidden');
-  document.getElementById('q-text').innerHTML = card.question;
+
+  document.getElementById('q-text').textContent = card.question;
   const choices = document.getElementById('choices');
   choices.innerHTML = '';
+
   card.choices.forEach((ch,i)=>{
     const btn = document.createElement('button');
     btn.textContent = (i+1)+'. '+ch;
     btn.onclick = ()=> {
-      if(i === card.answer) state.scores.TeamA += card.points;
+      if(i === card.answer) state.scores.TeamA += card.points || 0;
       state.used.add(card.num);
       cardEl.classList.add('disabled');
       modal.classList.add('hidden');
@@ -101,18 +111,30 @@ function resetGame(){
   if(state.currentGame) startGame(state.currentGame);
 }
 
-// Botões
-document.getElementById('back-btn')?.addEventListener('click', ()=>{
-  document.getElementById('board').classList.add('hidden');
-  document.getElementById('game-list').classList.remove('hidden');
-});
+// Inicialização após DOM carregado
+window.addEventListener('DOMContentLoaded', () => {
+  const closeBtn = document.getElementById('close-q');
+  if(closeBtn){
+    closeBtn.addEventListener('click', () => {
+      document.getElementById('modal').classList.add('hidden');
+    });
+  }
 
-document.getElementById('close-q')?.addEventListener('click', ()=>{
-  document.getElementById('modal').classList.add('hidden');
-});
+  const backBtn = document.getElementById('back-btn');
+  if(backBtn){
+    backBtn.addEventListener('click', () => {
+      document.getElementById('board').classList.add('hidden');
+      document.getElementById('game-list').classList.remove('hidden');
+    });
+  }
 
-// Inicialização
-loadGames().then(games=>{
-  if(games.length===0) document.getElementById('game-list').innerText='Nenhum jogo encontrado em games.json';
-  else renderGameList(games);
+  // Carregar e renderizar jogos
+  loadGames().then(games=>{
+    const listEl = document.getElementById('game-list');
+    if(!games || games.length===0){
+      listEl.innerText='Nenhum jogo encontrado em games.json';
+    } else {
+      renderGameList(games);
+    }
+  });
 });
